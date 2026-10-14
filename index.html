@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .card {
+        height: 300px;
+        width: 200px;
+        background-color: blueviolet;
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: transparent;
+        font-size: 80px;
+        transition: all 1s;
+      }
+
+      .card-open {
+        color: white;
+      }
+
+      .card-matched {
+        opacity: 0;
+      }
+
+      .container {
+        width: 860px;
+        margin: 0 auto;
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="container">
+      <!-- <div class="card" id="card1" onclick="reveal()">2</div>
+      <div class="card" id="card1" onclick="reveal()">2</div>
+      <div class="card" id="card1" onclick="reveal()">2</div>
+      <div class="card" id="card1" onclick="reveal()">2</div> -->
+    </div>
+
+    <script>
+      const shapes = ["🤩", "🤯", "😼", "💔", "🥀", "💀"];
+      const cards = [];
+
+      let matchCount = 0;
+
+      let animating = false;
+
+      let openIndex1 = -1;
+      let openIndex2 = -1;
+
+      for (let i = 0; i < shapes.length; i++) {
+        cards.push(shapes[i]);
+        cards.push(shapes[i]);
+      }
+
+      function shuffle(array) {
+        let currentIndex = array.length;
+
+        while (currentIndex !== 0) {
+          const randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+
+          const temp = array[currentIndex];
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temp;
+        }
+      }
+
+      shuffle(cards);
+
+      function startGame() {
+        let result = "";
+        for (let i = 0; i < cards.length; i++) {
+          result += `<div class="card" id="card${i}" onclick="reveal(${i})">${cards[i]}</div>`;
+        }
+        document.getElementById("container").innerHTML = result;
+      }
+
+      startGame();
+
+      function reveal(index) {
+        if (!animating) {
+          const card = document.getElementById(`card${index}`);
+          card.classList.add("card-open");
+
+          if (openIndex1 === -1) {
+            openIndex1 = index;
+          } else {
+            if (openIndex1 !== index) {
+              openIndex2 = index;
+
+              if (cards[openIndex1] === cards[openIndex2]) {
+                console.log("match");
+
+                matchCount++;
+
+                document
+                  .getElementById(`card${openIndex1}`)
+                  .classList.add("card-matched");
+
+                document
+                  .getElementById(`card${openIndex2}`)
+                  .classList.add("card-matched");
+
+                openIndex1 = -1;
+                openIndex2 = -1;
+
+                if (matchCount === shapes.length) {
+                  alert("You won!");
+
+                  // next level, reset
+                }
+              } else {
+                console.log("no match");
+                animating = true;
+
+                setTimeout(function () {
+                  document
+                    .getElementById(`card${openIndex1}`)
+                    .classList.remove("card-open");
+                  document
+                    .getElementById(`card${openIndex2}`)
+                    .classList.remove("card-open");
+
+                  openIndex1 = -1;
+                  openIndex2 = -1;
+
+                  animating = false;
+                }, 1000);
+              }
+            }
+
+            console.log(openIndex1, openIndex2);
+          }
+        }
+
+        // if (card.classList.contains("card-open")) {
+        //   card.classList.remove("card-open");
+        // } else {
+        //   card.classList.add("card-open");
+        // }
+      }
+    </script>
+  </body>
+</html>
